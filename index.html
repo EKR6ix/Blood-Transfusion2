@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>វិញ្ញាសាអនុវត្តឈាមវិទ្យា៖ Neubauer Hemocytometer, ESR & Hematocrit - ថ្នាក់ BSL ឆ្នាំទី១</title>
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b1120;
+  --card: #15203b;
+  --card-border: #1e293b;
+  --primary: #38bdf8;
+  --primary-hover: #0284c7;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #f59e0b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', 'Inter', system-ui, sans-serif; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+.wrap { width: 100%; max-width: 820px; margin: 0 auto; }
+header.hero { text-align: center; margin-bottom: 20px; }
+.hero h1 { font-size: 1.32rem; color: var(--primary); margin-bottom: 6px; line-height: 1.45; }
+.hero p { color: var(--text-muted); font-size: 0.88rem; }
+.card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border); font-size: 0.88rem; }
+.badge { background: #0369a1; color: #bae6fd; padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 0.75rem; }
+.timer-box { font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 6px; font-size: 1.05rem; }
+.timer-box.urgent { color: var(--danger); }
+.question-title { font-size: 1.05rem; line-height: 1.6; font-weight: 600; margin-bottom: 14px; color: var(--text); }
+.diagram-box { display: flex; justify-content: center; align-items: center; background: #080e1e; border: 1px solid #1e3a8a; border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.option-btn { background: #0b1120; border: 1px solid var(--card-border); color: var(--text); padding: 14px 16px; border-radius: 10px; text-align: left; font-size: 0.94rem; cursor: pointer; transition: all 0.15s ease; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; }
+.option-btn:hover:not(:disabled) { border-color: var(--primary); background: #1a253c; }
+.option-btn:disabled { cursor: default; }
+.option-btn.correct { background: rgba(34, 197, 94, 0.22) !important; border-color: var(--success) !important; color: #86efac; font-weight: 600; }
+.option-btn.wrong { background: rgba(239, 68, 68, 0.22) !important; border-color: var(--danger) !important; color: #fca5a5; }
+.letter { font-weight: 700; color: var(--primary); font-size: 1.05rem; min-width: 25px; }
+.hint-section { margin-bottom: 16px; }
+.hint-btn { background: none; border: none; color: var(--accent); font-size: 0.88rem; cursor: pointer; text-decoration: underline; padding: 0; }
+.hint-content { display: none; margin-top: 8px; background: rgba(245, 158, 11, 0.12); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; color: #fde68a; line-height: 1.5; }
+.feedback-box { display: none; background: #0d1a33; border: 1px solid #2563eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; line-height: 1.5; font-size: 0.9rem; }
+.feedback-box h4 { margin-bottom: 8px; color: #93c5fd; font-size: 0.95rem; }
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.action-btn { background: var(--primary); color: #090d16; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 0.92rem; cursor: pointer; transition: background 0.15s; }
+.action-btn:hover { background: var(--primary-hover); }
+.action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.progress-wrap { margin-top: 20px; }
+.progress-bar-bg { background: #1e293b; height: 8px; border-radius: 9999px; overflow: hidden; }
+.progress-bar-fill { background: var(--primary); height: 100%; width: 3.33%; transition: width 0.3s; }
+.final-screen { display: none; text-align: center; padding: 36px 12px; }
+.final-score { font-size: 3rem; font-weight: 800; color: var(--primary); margin: 16px 0; }
+.review-list { margin-top: 20px; text-align: left; }
+.review-item { border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: #0b1120; font-size: 0.88rem; }
+.review-item summary { cursor: pointer; font-weight: 700; color: var(--primary); }
+.review-item p { margin-top: 6px; color: #cbd5e1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>វិញ្ញាសាអនុវត្តឈាមវិទ្យា៖ ការរាប់គោលិកាក្នុង Neubauer Chamber, ល្បឿន ESR & ការធ្វើ Hematocrit ដោយដៃ</h1>
+    <p>ផ្អែកលើស្លាយមេរៀនសាស្ត្រាចារ្យ Sareth Sokhom • ៣០ សំណួរ Higher-Order Bloom • ចៃដន្យ (Shuffle) • ៦០ វិនាទី</p>
+  </header>
+
+  <div class="card" id="quizCard">
+    <div class="status-bar">
+      <span class="badge" id="topicBadge">មេរៀន</span>
+      <span id="qCount" style="font-weight:600;">សំណួរទី 1 នៃ 30</span>
+      <div class="timer-box" id="timerBox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="timerText">60s</span>
+      </div>
+    </div>
+
+    <div id="diagramContainer" class="diagram-box"></div>
+
+    <div class="question-title" id="questionTitle"></div>
+
+    <div class="hint-section">
+      <button class="hint-btn" id="hintToggleBtn" onclick="toggleHint()">💡 បង្ហាញតម្រុយគ្លីនិក (Show Hint)</button>
+      <div class="hint-content" id="hintContent"></div>
+    </div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="feedback-box" id="feedbackBox">
+      <h4>ការពន្យល់លម្អិតក្នុងមន្ទីរពិសោធន៍ (Lab Rationale):</h4>
+      <div id="feedbackText"></div>
+    </div>
+
+    <div class="controls">
+      <span style="font-size:0.88rem; color:var(--text-muted);" id="liveScore">ពិន្ទុ: 0 / 0</span>
+      <button class="action-btn" id="nextBtn" onclick="nextQuestion()" disabled>សំណួរបន្ទាប់ →</button>
+    </div>
+  </div>
+
+  <div class="card final-screen" id="finalCard">
+    <h2>បញ្ចប់ការធ្វើតេស្ត!</h2>
+    <p style="margin-top:8px; color:var(--text-muted);">អ្នកបានឆ្លងកាត់ការអនុវត្តវិញ្ញាសាឈាមវិទ្យា ៣០ សំណួររួចរាល់ហើយ។</p>
+    <div class="final-score" id="finalScoreVal">0%</div>
+    <p id="finalFeedback" style="margin-bottom: 24px; color: #cbd5e1; font-size:1.02rem; line-height:1.6;"></p>
+    <button class="action-btn" onclick="initQuiz()">ធ្វើវិញ្ញាសាសាឡើងវិញ (Shuffle ថ្មី)</button>
+    <div class="review-list" id="reviewContainer"></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const rawQuestions = [
+  {
+    topic: "Neubauer Chamber — WBC Quality Control [Evaluate]",
+    title: "អ្នកបច្ចេកទេសរាប់គោលិកាស (WBC) ក្នុងថតទាំងពីរនៃ Neubauer hematocytometer លើសំណាកតែមួយ ឃើញថាថតខាងលើរាប់បាន 80 កោសិកា រីឯថតខាងក្រោមរាប់បាន 110 កោសិកា (គម្លាតខុសគ្នាប្រហែល 37.5%)។ ផ្អែកលើការត្រួតពិនិត្យគុណភាព តើត្រូវសម្រេចចិត្តបែបណា?",
+    hint: "ការរាប់ WBC ទាំងពីរលើកត្រូវតែមានគម្លាតអតិបរមាមិនឱ្យលើសពី +/- 20% ឡើយ។",
+    options: [
+      { text: "លទ្ធផលមិនត្រឹមត្រូវ ព្រោះគម្លាតលើសពី +/- 20% ដូច្នេះត្រូវតែរៀបចំពង្រាវ និងរាប់ឡើងវិញ", isCorrect: true },
+      { text: "យកតម្លៃមធ្យមនៃថតទាំងពីរមកគុណនឹង ៥០ រួចចេញលទ្ធផលជាផ្លូវការ", isCorrect: false },
+      { text: "ជ្រើសរើសយកតែតម្លៃថតខាងលើដែលទាបជាងដើម្បីការពារការច្រឡំកោសិកា", isCorrect: false },
+      { text: "ជាគម្លាតដែលអាចទទួលយកបាន ព្រោះការរាប់កោសិកាដោយភ្នែកតែងតែមានលម្អៀង ៥០%", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយមេរៀនត្រួតពិនិត្យគុណភាព (QC)៖ ការរាប់គោលិកាឈាមស (WBC) ត្រូវធ្វើពីរដង ហើយការរាប់ទាំងពីរលើកត្រូវតែមានគម្លាតមិនលើសពី +/- 20% ឡើយ (ចំណែក RBC និង Platelet ត្រឹមតែ +/- 10%)។ បើគម្លាតលើសពីនេះ ត្រូវតែលុបចោល ហើយរាប់ឡើងវិញ។"
+  },
+  {
+    topic: "Neubauer Chamber — WBC Concentration Calculation [Apply]",
+    title: "ក្រោយពង្រាវឈាម ១/២០ ជាមួយប្រតិករ Turk អ្នកបច្ចេកទេសរាប់គោលិកាសឃើញសរុប N = 140 កោសិកាក្នុងការ៉េធំទាំង ៤ (Squares 1, 3, 7, 9)។ តើកំហាប់កោសិកាឈាមសក្នុងឈាមអ្នកជំងឺស្មើនឹងប៉ុន្មាន?",
+    hint: "រូបមន្ត៖ ចំនួនកោសិកាក្នុង 1 mm3 = N x 2.5 x 20 = N x 50/mm3 (ឬ uL)។",
+    options: [
+      { text: "7,000 /mm³ (ឬ 7.0 x 10⁹/L)", isCorrect: true },
+      { text: "2,800 /mm³ (ឬ 2.8 x 10⁹/L)", isCorrect: false },
+      { text: "14,000 /mm³ (ឬ 14.0 x 10⁹/L)", isCorrect: false },
+      { text: "700 /mm³ (ឬ 0.7 x 10⁹/L)", isCorrect: false }
+    ],
+    rationale: "តាមរូបមន្តគណនា WBC របស់សាស្ត្រាចារ្យ Sareth Sokhom៖ មាឌការ៉េធំទាំង ៤ = 4 x 1 mm² x 0.1 mm = 0.4 mm³។ ដើម្បីគណនាក្នុង 1 mm³ ត្រូវគុណនឹង 2.5 រួចគុណនឹងកត្តាពង្រាវ 20 -> N x 2.5 x 20 = N x 50។ ដូច្នេះ 140 x 50 = 7,000 /mm³ (ស្មើនឹង 7.0 x 10⁹/L)។"
+  },
+  {
+    topic: "Neubauer Chamber — Turk Reagent Mechanism [Analyze]",
+    title: "តើហេតុអ្វីបានជាប្រតិករ Turk ត្រូវផ្សំឡើងដោយអាស៊ីតអាសេទិក (Glacial Acetic Acid) និង Bleu de Méthylène ក្នុងការរាប់កោសិកាឈាមស?",
+    hint: "អាស៊ីតរំលាយបំបែកកោសិកាក្រហម រីឯពណ៌ជ្រលក់ស្នូលកោសិកាសឱ្យងាយមើល។",
+    options: [
+      { text: "អាស៊ីតរំលាយបំបែក RBCs ចោល រីឯពណ៌ខៀវជ្រលក់ណៃយូ WBCs ឱ្យច្បាស់ងាយរាប់", isCorrect: true },
+      { text: "អាស៊ីតជួយរក្សា RBCs ឱ្យនៅរឹងមាំ រីឯពណ៌ខៀវរំលាយបំបែកផ្លាកែតចោល", isCorrect: false },
+      { text: "សារធាតុទាំងពីរជួយបង្កើនសម្ពាធ Osmotic ដើម្បីការពារកុំឱ្យបែកគ្រាប់ឈាមក្រហម", isCorrect: false },
+      { text: "អាស៊ីតទប់ឈាមមិនឱ្យកក រីឯពណ៌ខៀវជួយសម្លាប់មេរោគបាក់តេរីក្នុងសំណាក", isCorrect: false }
+    ],
+    rationale: "កោសិកាក្រហមមានចំនួនច្រើនជាងកោសិកាសរាប់រយដង។ អាស៊ីតអាសេទិក (Glacial acetic acid 4 mL) ធ្វើឱ្យ Hemolyze គ្រាប់ឈាមក្រហមទាំងអស់ ដើម្បីកុំឱ្យបាំងភ្នែក រីឯ Methylene blue ជ្រលក់ពណ៌ណៃយូរបស់ WBC ឱ្យឃើញពណ៌ខៀវស្វាយងាយស្រួលរាប់ក្រោម Objective 10x។"
+  },
+  {
+    topic: "Neubauer Chamber — Boundary Counting Rule [Evaluate]",
+    title: "ដើម្បីជៀសវាងការរាប់កោសិកាត្រួតគ្នាច្រំដែល (Double counting) តើវិធានព្រំប្រទល់ (Inclusion/Exclusion Rule) ត្រូវបានកំណត់អនុវត្តយ៉ាងដូចម្តេចចំពោះកោសិកាដែលទំលើបន្ទាត់ក្រឡាការ៉េ?",
+    hint: "រាប់កោសិកាដែលទំលើបន្ទាត់ ២ ជ្រុង (ឧ. លើ និងឆ្វេង) ហើយមិនរាប់ ២ ជ្រុងទៀត (ក្រោម និងស្តាំ)។",
+    svg: `<svg width="220" height="90" viewBox="0 0 220 90"><rect x="50" y="15" width="60" height="60" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/><circle cx="50" cy="30" r="5" fill="#22c55e"/><circle cx="70" cy="15" r="5" fill="#22c55e"/><circle cx="110" cy="50" r="5" fill="#ef4444"/><circle cx="80" cy="75" r="5" fill="#ef4444"/><circle cx="80" cy="45" r="5" fill="#38bdf8"/><text x="145" y="32" fill="#22c55e" font-size="9">✓ រាប់ (លើ/ឆ្វេង)</text><text x="145" y="65" fill="#ef4444" font-size="9">✗ ចោល (ក្រោម/ស្តាំ)</text></svg>`,
+    options: [
+      { text: "រាប់បញ្ចូលកោសិកាដែលទំលើបន្ទាត់ព្រំដែន ២ ជ្រុង ហើយច្រានចោលកោសិកាលើ ២ ជ្រុងទល់មុខ", isCorrect: true },
+      { text: "រាប់បញ្ចូលគ្រប់កោសិកាទាំងអស់ឱ្យតែប៉ះនឹងគែមបន្ទាត់ទាំង ៤ ជ្រុងនៃការ៉េ", isCorrect: false },
+      { text: "ច្រានចោលរាល់កោសិកាណាដែលប៉ះបន្ទាត់ ដោយរាប់តែត្រឹមកោសិកានៅកណ្តាលសុទ្ធ", isCorrect: false },
+      { text: "រាប់តែជ្រុងខាងក្រោម និងជ្រុងខាងស្តាំប៉ុណ្ណោះក្នុងគ្រប់ការ៉េទាំងអស់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយនីតិវិធី៖ ពេលរាប់ក្នុង Neubauer chamber ត្រូវរាប់បញ្ចូលគោលិកាដែលនៅជាប់ខ្សែបន្ទាត់ខាងក្រៅពីរជ្រុង (ឧទាហរណ៍៖ ខាងលើ និងខាងឆ្វេង) ហើយចោលពីរជ្រុងទៀត (ខាងក្រោម និងខាងស្តាំ) ដើម្បីធានាភាពសុក្រឹត និងមិនរាប់កោសិកាដដែលៗត្រួតគ្នា។"
+  },
+  {
+    topic: "Neubauer Chamber — Loading Artifacts [Analyze]",
+    title: "ពេលបាញ់បញ្ចូលល្បាយឈាមពង្រាវចូលក្នុង Neubauer chamber ប្រសិនបើអ្នកបច្ចេកទេសបាញ់លើសចំណុះរហូតដល់ហៀរហូរចូលទៅក្នុងរណ្តៅចំហៀង (Flooded moat) តើនឹងប៉ះពាល់ដល់ការរាប់យ៉ាងដូចម្តេច?",
+    hint: "ទឹកហៀរជ្រុលអាចលើកឡាមែលឱ្យខ្ពស់ជាង 0.1 mm ឬធ្វើឱ្យកោសិកាហូរចេញមិនស្មើ។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><rect x="30" y="15" width="160" height="55" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/><rect x="75" y="20" width="70" height="45" fill="#334155"/><circle cx="110" cy="42" r="18" fill="#ef4444" opacity="0.6"/><path d="M 60,30 Q 75,10 90,30" fill="none" stroke="#ef4444" stroke-width="2"/><text x="110" y="46" fill="#f8fafc" font-size="9" text-anchor="middle">Flooded / Overfilled</text><text x="110" y="78" fill="#ef4444" font-size="8" text-anchor="middle">Alters 0.1mm depth</text></svg>`,
+    options: [
+      { text: "ជម្រៅ 0.1 mm ត្រូវប្រែប្រួល និងកោសិការាយមិនស្មើ បណ្តាលឱ្យលទ្ធផលរាប់ខុសឆ្គងទាំងស្រុង", isCorrect: true },
+      { text: "គ្មានការប្រែប្រួលអ្វីឡើយ ព្រោះកោសិកាទាំងអស់ត្រូវជាប់ស្អិតលើកញ្ចក់បាត", isCorrect: false },
+      { text: "ធ្វើឱ្យកោសិកាទាំងអស់ប្រែពណ៌ទៅជាថ្លាភ្លាមៗមិនអាចមើលឃើញ", isCorrect: false },
+      { text: "កោសិកានឹងបែកគ្រាប់ឈាមភ្លាមៗដោយសារតែល្បាយច្រើនជ្រុល", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនបានហាមដាច់ខាតចំពោះការដាក់ចំណុះឈាមពង្រាវច្រើនលើសលប់ (Flooded chamber) ពីព្រោះការហៀរហូរចូល Moat អាចអូសកោសិកាចេញមិនស្មើភាព ឬធ្វើឱ្យកម្ពស់ឡាមែលប្រែប្រួលខុសពីខ្នាតស្តង់ដារ 0.1 mm ដែលនាំឱ្យការគណនាមាឌបាត់បង់សុពលភាព។"
+  },
+  {
+    topic: "Neubauer Chamber — Settling Chamber [Analyze]",
+    title: "ក្រោយពេលបាញ់បញ្ចូលល្បាយឈាមពង្រាវចូលក្នុង Neubauer chamber ហេតុអ្វីបានជាត្រូវដាក់បន្ទះរាប់ក្នុងប្រអប់ Petri dish សើម ឬទុកឱ្យស្ងៀមមួយរយៈសិនមុននឹងយកទៅអានក្រោមមីក្រូទស្សន៍?",
+    hint: "ទុកឱ្យកោសិកាធ្លាក់ចុះស្មើលើបាតក្រឡា និងការពារកុំឱ្យហួតស្ងួត (Prevent evaporation)។",
+    options: [
+      { text: "ដើម្បីឱ្យកោសិកាធ្លាក់ចុះស្មើលើផ្ទៃរាប់ (Settle) និងការពារកុំឱ្យហួតស្ងួតទឹកល្បាយ", isCorrect: true },
+      { text: "ដើម្បីឱ្យកោសិកាឈាមសមានពេលបន្តពូជបន្ថែមក្នុងការ៉េនីមួយៗ", isCorrect: false },
+      { text: "ដើម្បីឱ្យជាតិអាស៊ីតហួតអស់កុំឱ្យខូចកញ្ចក់ឡាមីក្រូទស្សន៍", isCorrect: false },
+      { text: "ដើម្បីឱ្យបាក់តេរីក្នុងបរិយាកាសចូលទៅជួយជ្រលក់ពណ៌កោសិកា", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនបញ្ជាក់ថា៖ បន្ទាប់ពីបញ្ចូលល្បាយរួច ត្រូវយកបន្ទះ Neubauer ទៅដាក់ក្នុងប្រអប់សំណើម (Moist Petri dish) មួយរយៈ (WBC: 1 នាទី, RBC: 3 នាទី, Platelet: 15 នាទី) ដើម្បីការពារកុំឱ្យរំហួតទឹក (Evaporation) និងរង់ចាំឱ្យកោសិកាធ្លាក់ចុះមកដេកស្ងៀមស្មើល្អលើបាតក្រឡារាប់ (Monolayer settling)។"
+  },
+  {
+    topic: "Neubauer Chamber — RBC Dilution & Reagent [Analyze]",
+    title: "ក្នុងការរាប់កោសិកាឈាមក្រហម (RBC) ហេតុអ្វីបានជាគេត្រូវពង្រាវឈាមដល់ទៅ ១/២០០ ជាមួយសូលុយស្យុង Hayem ហើយមិនប្រើទឹកសុទ្ធ ឬប្រតិករ Turk?",
+    hint: "RBC មានច្រើនពាន់លាន និងងាយបែក ដូច្នេះត្រូវការកំហាប់ពង្រាវខ្ពស់ និងសូលុយស្យុង Isotonic មាន Formalin ថែរក្សារូបរាង។",
+    options: [
+      { text: "ព្រោះ RBC មានចំនួនច្រើនមហាសាល ហើយ Hayem ជាសូលុយស្យុង Isotonic រក្សា RBC មិនឱ្យបែក", isCorrect: true },
+      { text: "ព្រោះសូលុយស្យុង Hayem ជួយកម្ទេចកោសិកាឈាមក្រហមឱ្យសល់តែប្លាកែត", isCorrect: false },
+      { text: "ព្រោះទឹកសុទ្ធធ្វើឱ្យកោសិកាក្រហមរួមស្វិតមិនអាចមើលឃើញក្រោមមីក្រូទស្សន៍", isCorrect: false },
+      { text: "ព្រោះការរាប់ RBC ត្រូវការពង្រាវតិចជាងការរាប់ WBC ដើម្បីងាយស្រួលរក", isCorrect: false }
+    ],
+    rationale: "ចំនួន RBC ក្នុងឈាមមានដល់ទៅ 4-6 លាន/µL (ច្រើនជាង WBC រាប់រយដង) ដូច្នេះត្រូវការពង្រាវកម្រិតខ្ពស់ ១/២០០។ សូលុយស្យុង Hayem (ផ្សំពី Trisodium citrate និង Formalin) ជាសូលុយស្យុង Isotonic ដែលជួយ Fix និងការពារកោសិកាក្រហមមិនឱ្យបែកគ្រាប់ឈាម (Hemolysis) ផ្ទុយពី Turk ដែលមានអាស៊ីតកម្ទេច RBC ចោល។"
+  },
+  {
+    topic: "Neubauer Chamber — RBC Count Calculation [Apply]",
+    title: "ក្រោយពង្រាវឈាម ១/២០០ ជាមួយ Hayem អ្នកបច្ចេកទេសរាប់គោលិកាក្រហមក្នុងការ៉េតូចទាំង ៥ (Central grid) ឃើញសរុប N = 480 កោសិកា។ តើចំនួន RBC ក្នុងឈាមអ្នកជំងឺស្មើនឹងប៉ុន្មាន?",
+    hint: "រូបមន្ត៖ ចំនួន RBC ក្នុង 1 mm3 = N x 50 x 200 = N x 10,000/mm3។",
+    options: [
+      { text: "4,800,000 /mm³ (ឬ 4.8 x 10¹²/L)", isCorrect: true },
+      { text: "2,400,000 /mm³ (ឬ 2.4 x 10¹²/L)", isCorrect: false },
+      { text: "960,000 /mm³ (ឬ 0.96 x 10¹²/L)", isCorrect: false },
+      { text: "480,000 /mm³ (ឬ 0.48 x 10¹²/L)", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយគណនា RBC៖ ក្រឡាផ្ទៃការ៉េតូចទាំង ៥ = 5 x 0.04 mm² = 0.2 mm²។ មាឌ = 0.2 x 0.1 mm = 0.02 mm³។ ដើម្បីគណនាក្នុង 1 mm³ ត្រូវគុណនឹង 50 រួចគុណនឹងកត្តាពង្រាវ 200 -> N x 50 x 200 = N x 10,000។ ដូច្នេះ 480 x 10,000 = 4,800,000 /mm³ (ស្មើនឹង 4.8 x 10¹²/L)។"
+  },
+  {
+    topic: "Neubauer Chamber — Platelet Counting Technique [Analyze]",
+    title: "នៅពេលរាប់ប្លាកែត (Platelets) ក្រោមមីក្រូទស្សន៍ Objective 40x ហេតុអ្វីបានជាអ្នកបច្ចេកទេសត្រូវទម្លាក់ Condenser ចុះក្រោម និងបិទ Iris diaphragm បន្ថយពន្លឺ?",
+    hint: "ប្លាកែតតូចល្អិតខ្លាំង និងចាំងពន្លឺ (Refractile) ការបន្ថយពន្លឺជួយបង្កើត Contrast ច្បាស់ពីកាកសំណល់ Debris។",
+    options: [
+      { text: "ដើម្បីបង្កើនកម្រិត Contrast ឱ្យឃើញប្លាកែតចាំងពន្លឺច្បាស់ និងមិនច្រឡំជាមួយកម្ទេច Debris", isCorrect: true },
+      { text: "ដើម្បីកុំឱ្យកម្តៅអំពូលមីក្រូទស្សន៍ដុតបំផ្លាញកោសិកាឈាមសដែលនៅសល់", isCorrect: false },
+      { text: "ដើម្បីឱ្យប្លាកែតបញ្ចេញចលនាហែលយ៉ាងលឿនក្នុងបន្ទះរាប់", isCorrect: false },
+      { text: "ដើម្បីកាត់បន្ថយទំហំក្រឡាការ៉េនៃ Neubauer chamber ឱ្យរួមតូច", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនចែងថា៖ Light adjustment គឺជាលក្ខខណ្ឌចាំបាច់បំផុតសម្រាប់ការរាប់ Platelet។ ដោយសារប្លាកែតមានទំហំតូចល្អិត (1-3 µm) និងគ្មានពណ៌ ការទម្លាក់ Condenser និងបន្ថយពន្លឺនឹងបង្កើតបានជា Phase contrast បង្ហាញពន្លឺចាំងផ្លេកៗ (Refractile body) ជួយឱ្យញែកដាច់ពីកាកសំណល់ធូលី ឬបាក់តេរី។"
+  },
+  {
+    topic: "Neubauer Chamber — Platelet Clumping Artifact [Evaluate]",
+    title: "អ្នកជំងឺម្នាក់មានលទ្ធផលរាប់ប្លាកែតដោយដៃឃើញត្រឹមតែ 35 x 10^9/L (ទាបខ្លាំង) ប៉ុន្តែពេលពិនិត្យឈាមស្តើង (Blood smear) ឃើញប្លាកែតកកផ្តុំគ្នាជាដុំៗ (Platelet clumps)។ តើអ្នកបច្ចេកទេសគួរចាត់ការបែបណា?",
+    hint: "ប្លាកែតផ្តុំគ្នា (Clumped platelets) មិនអាចរាប់បានត្រឹមត្រូវទេ ត្រូវបដិសេធលទ្ធផល និងបូមឈាមថ្មីដោយប្រើ EDTA ត្រឹមត្រូវ។",
+    options: [
+      { text: "បដិសេធលទ្ធផលរាប់នេះ រួចទាមទារសុំគំរូឈាមថ្មីដែលលាយជាមួយ anticoagulant EDTA ត្រឹមត្រូវ", isCorrect: true },
+      { text: "រាយការណ៍លទ្ធផល 35 x 10^9/L ភ្លាមៗព្រោះជាករណីអាសន្នស្រួចស្រាវ", isCorrect: false },
+      { text: "យកចំនួនដុំនីមួយៗគុណនឹង ១០០០ ដោយសន្មតថាដុំមួយមានប្លាកែត ១០០", isCorrect: false },
+      { text: "បន្ថែមទឹកអាស៊ីត hydrochloric ចូលទៅក្នុងបន្ទះរាប់ដើម្បីបំបែកដុំកក", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនបញ្ជាក់យ៉ាងច្បាស់៖ ផ្លាកែតផ្តុំគ្នា (Clumped platelets) មិនអាចរាប់បានត្រឹមត្រូវនោះទេ នាំឱ្យលទ្ធផលទាបក្លែងក្លាយ (Pseudothrombocytopenia)។ ដូច្នេះ ត្រូវតែសម្រង់សំណាកឈាមម្តងទៀតដោយក្រឡុកជាមួយ EDTA ឱ្យបានសព្វល្អភ្លាមៗក្រោយបូម។"
+  },
+  {
+    topic: "Neubauer Chamber — Platelet Calculation [Apply]",
+    title: "ក្រោយពង្រាវឈាម ១/១០០ ជាមួយ Ammonium Oxalate 1% អ្នកបច្ចេកទេសរាប់ប្លាកែតក្នុងផ្ទៃការ៉េធំកណ្តាលទាំងមូល ($1 \text{ mm}^2$) ឃើញ N = 220 កោសិកា។ តើចំនួនប្លាកែតក្នុងឈាមស្មើនឹងប៉ុន្មាន?",
+    hint: "រូបមន្ត៖ ចំនួនប្លាកែតក្នុង 1 mm3 = N x 10 x 100 = N x 1,000/mm3។",
+    options: [
+      { text: "220,000 /mm³ (ឬ 220 x 10⁹/L)", isCorrect: true },
+      { text: "22,000 /mm³ (ឬ 22 x 10⁹/L)", isCorrect: false },
+      { text: "440,000 /mm³ (ឬ 440 x 10⁹/L)", isCorrect: false },
+      { text: "110,000 /mm³ (ឬ 110 x 10⁹/L)", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយគណនាប្លាកែត៖ មាឌការ៉េធំកណ្តាល = 1 mm² x 0.1 mm = 0.1 mm³។ គណនាក្នុង 1 mm³ ត្រូវគុណនឹង 10 រួចគុណនឹងកត្តាពង្រាវ 100 -> N x 10 x 100 = N x 1,000។ ដូច្នេះ 220 x 1,000 = 220,000 /mm³ (ស្មើនឹង 220 x 10⁹/L ស្ថិតក្នុង Normal range 150-450 x 10⁹/L)។"
+  },
+  {
+    topic: "ESR Westergren — Tilted Tube Error [Analyze]",
+    title: "ក្នុងអំឡុងពេលធ្វើតេស្ត ESR ប្រសិនបើតេស្តបំពង់ Westergren ត្រូវដាក់ផ្អៀងបន្តិច (ត្រឹមតែ 3° ពីបន្ទាត់បញ្ឈរត្រង់) ដោយសារជើងទម្រមិនស្មើ តើលទ្ធផល ESR នឹងប្រែប្រួលយ៉ាងដូចម្តេច?",
+    hint: "បំពង់ផ្អៀងធ្វើឱ្យ RBCs រអិលធ្លាក់តាមជញ្ជាំងកញ្ចក់លឿនជាងមុន បង្កឱ្យ ESR កើនឡើងខ្ពស់ខុសពិត។",
+    svg: `<svg width="200" height="90" viewBox="0 0 200 90"><line x1="80" y1="10" x2="80" y2="80" stroke="#22c55e" stroke-width="3"/><text x="80" y="88" fill="#22c55e" font-size="8" text-anchor="middle">Vertical (True)</text><line x1="130" y1="10" x2="150" y2="80" stroke="#ef4444" stroke-width="3"/><text x="145" y="88" fill="#ef4444" font-size="8" text-anchor="middle">Tilted (False High)</text></svg>`,
+    options: [
+      { text: "ESR កើនឡើងខ្ពស់ខុសពីការពិត (Falsely increased ESR) ព្រោះកោសិការអិលធ្លាក់តាមជញ្ជាំងបំពង់", isCorrect: true },
+      { text: "ESR ធ្លាក់ចុះជិតដល់សូន្យ ព្រោះកោសិកាឈាមកកស្ទះជាប់នឹងបាតបំពង់", isCorrect: false },
+      { text: "គ្មានការប្រែប្រួលអ្វីឡើយ ព្រោះទំនាញផែនដីមានកម្លាំងស្មើគ្នានៅគ្រប់មុំ", isCorrect: false },
+      { text: "ប្លាស្មាប្រែជាពណ៌ខៀវភ្លាមៗដោយសារសម្ពាធជញ្ជាំងកញ្ចក់", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន ESR បានបញ្ជាក់ថា៖ បំពង់ ESR ដែលដាក់មិនត្រង់បញ្ឈរ (Tilted tube) នឹងធ្វើឱ្យកោសិកាក្រហមរអិលធ្លាក់ចុះតាមបណ្តោយជញ្ជាំងកញ្ចក់ខាងក្រោមយ៉ាងលឿន ដោយមិនសូវជួបប្រទះការរារាំងពីប្លាស្មាដែលហូរឡើងលើឡើយ បណ្តាលឱ្យលទ្ធផល ESR ឡើងខ្ពស់ខុសពិតប្រាកដ។"
+  },
+  {
+    topic: "ESR Principle — Rouleaux & Zeta Potential [Analyze]",
+    title: "ហេតុអ្វីបានជាការកើនឡើងនៃប្រូតេអ៊ីនរលាកក្នុងប្លាស្មាដូចជា Fibrinogen និង Globulin ធ្វើឱ្យល្បឿនស្រុតឈាមក្រហម (ESR) កើនឡើងយ៉ាងខ្លាំង?",
+    hint: "ប្រូតេអ៊ីនវិជ្ជមានជួយបន្សាបបន្ទុកអវិជ្ជមាន (Zeta potential) លើភ្នាស RBC ធ្វើឱ្យកោសិកាជង់គ្នាជារាង Rouleaux ធ្លាក់ចុះលឿន។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><ellipse cx="60" cy="35" rx="16" ry="7" fill="#ef4444"/><ellipse cx="60" cy="45" rx="16" ry="7" fill="#ef4444"/><ellipse cx="60" cy="55" rx="16" ry="7" fill="#ef4444"/><text x="60" y="78" fill="#f59e0b" font-size="8" text-anchor="middle">Rouleaux (Fast fall)</text><circle cx="160" cy="30" r="10" fill="#ef4444"/><circle cx="140" cy="55" r="10" fill="#ef4444"/><circle cx="175" cy="55" r="10" fill="#ef4444"/><text x="160" y="78" fill="#94a3b8" font-size="8" text-anchor="middle">Dispersed (Slow)</text></svg>`,
+    options: [
+      { text: "ជួយបន្សាបបន្ទុកអវិជ្ជមាន (Zeta potential) ធ្វើឱ្យ RBCs ងាយជង់គ្នាជា Rouleaux មានទម្ងន់ធ្ងន់ស្រុតលឿន", isCorrect: true },
+      { text: "បំផ្លាញភ្នាសកោសិកាក្រហមឱ្យរលាយក្លាយជាទឹកប្លាស្មាទាំងអស់", isCorrect: false },
+      { text: "ជំរុញឱ្យកោសិកាឈាមស Neutrophil ទាញគ្រាប់ឈាមក្រហមទម្លាក់ចុះក្រោម", isCorrect: false },
+      { text: "កាត់បន្ថយកម្ពស់បំពង់ Westergren ពី ២០០ មីលីម៉ែត្រមកត្រឹម ៥០ មីលីម៉ែត្រ", isCorrect: false }
+    ],
+    rationale: "RBCs ធម្មតាមានបន្ទុកអវិជ្ជមានលើភ្នាស (Zeta potential ដោយសារ Sialic acid) ដែលច្រានកោសិកាមិនឱ្យនៅក្បែរគ្នា។ ពេលមានការរលាក កម្រិត Fibrinogen/Globulin កើនឡើងជួយបន្សាបបន្ទុកនេះ ធ្វើឱ្យ RBCs ជង់គ្នាដូចកាក់ (Rouleaux formation) បង្កើនទម្ងន់ធៀបនឹងផ្ទៃ (Mass-to-surface ratio) នាំឱ្យល្បឿនស្រុតចុះលឿន (Increased ESR)។"
+  },
+  {
+    topic: "ESR Limitations — Sickle Cell & Spherocytes [Analyze]",
+    title: "អ្នកជំងឺម្នាក់មានជំងឺរលាកសន្លាក់រ៉ាំរ៉ៃ (Rheumatoid arthritis) កម្រិតធ្ងន់ ប៉ុន្តែពិនិត្យ ESR បែរជាឃើញទាបស្ទើរតែសូន្យ (0-2 mm/h)។ ពិនិត្យឈាមឃើញមានកោសិកា Sickle cells និង Spherocytes ជាច្រើន។ តើមូលហេតុអ្វីបណ្តាលឱ្យ ESR ធ្លាក់ចុះបែបនេះ?",
+    hint: "កោសិកាដែលមានរូបរាងមិនប្រក្រតី (Sickle cells, Spherocytes) មិនអាចជង់គ្នាជា Rouleaux បានឡើយ។",
+    options: [
+      { text: "កោសិការាង Sickle cells និង Spherocytes មិនអាចជង់គ្នាជា Rouleaux បាន ទើបធ្លាក់ចុះយឺតបំផុត", isCorrect: true },
+      { text: "កោសិកាឈាមក្រហមរបស់អ្នកជំងឺគ្មានផ្ទុកជាតិអេម៉ូក្លូប៊ីនទាល់តែសោះ", isCorrect: false },
+      { text: "សូលុយស្យុង Citrate បានរំលាយកោសិកាមិនប្រក្រតីទាំងអស់ចោលក្នុងរយៈពេល ៥ នាទី", isCorrect: false },
+      { text: "កម្រិត Fibrinogen ក្នុងឈាមបានប្រែប្រួលក្លាយទៅជាខ្លាញ់ Cholesterol ទាំងអស់", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនបញ្ជាក់ច្បាស់ថា៖ Cell size and shape ធ្វើឱ្យប៉ះពាល់ដល់ ESR។ សំណាកឈាមដែលមានវត្តមាន Sickle cells, Acanthocytes ឬ Spherocytes មិនអាចផ្គុំជង់គ្នាបង្កើតជារូបរាង Rouleaux បានឡើយ។ កោសិកានៅរាយទោលធ្វើឱ្យជួបការកកិតរារាំងខ្លាំងពីប្លាស្មា នាំឱ្យល្បឿនស្រុតធ្លាក់ចុះទាបខុសប្រក្រតី (Decreased ESR)។"
+  },
+  {
+    topic: "ESR Dilution — Reagent Ratio [Apply]",
+    title: "យោងតាមនីតិវិធី Westergren ESR តើសមាមាត្ររវាងសូលុយស្យុង Sodium Citrate 3.8% និងឈាមត្រូវបានលាយក្នុងកម្រិតណា?",
+    hint: "សមាមាត្រ ១ ភាគ ៤ (Citrate 400 uL លាយជាមួយឈាម 1600 uL សរុប 2000 uL)។",
+    options: [
+      { text: "១ ភាគ Citrate 3.8% (400 µL) លាយជាមួយ ៤ ភាគ ឈាម (1600 µL) [សមាមាត្រ 1:4]", isCorrect: true },
+      { text: "១ ភាគ ឈាម លាយជាមួយ ៩ ភាគ Citrate 3.8% [សមាមាត្រ 1:9]", isCorrect: false },
+      { text: "ស្មើគ្នា ១ ភាគ ឈាម លាយជាមួយ ១ ភាគ Citrate 3.8% [សមាមាត្រ 1:1]", isCorrect: false },
+      { text: "ប្រើតែឈាមសុទ្ធ ១០០% ដោយមិនបាច់លាយជាមួយសូលុយស្យុងពង្រាវអ្វីទាំងអស់", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយនីតិវិធី ESR៖ ត្រូវប្រើ Micro Pipette បឺតសូលុយស្យុង Trisodium citrate 3.8% ចំនួន 400 µL ដាក់ក្នុងទីប essai រួចបឺតឈាមចំនួន 1600 µL ចូល (សមាមាត្រ Citrate:Blood គឺ 1:4) ក្រឡុកឱ្យសព្វ ទើបបឺតចូលក្នុងបំពង់ Westergren ឱ្យដល់កម្រិតសូន្យ។"
+  },
+  {
+    topic: "ESR Environmental Artifact — Vibration [Analyze]",
+    title: "ប្រសិនបើតំរៀបជើងទម្រពីប៉ែត Westergren ត្រូវបានដាក់លើតុពិសោធន៍ក្បែរម៉ាស៊ីនបង្វិល Centrifuge ដែលកំពុងដំណើរការញ័ររំញ័រខ្លាំង តើនឹងប៉ះពាល់ដល់លទ្ធផល ESR ដូចម្តេច?",
+    hint: "រំញ័រ (Vibration) ជួយពន្លឿនកោសិកាឱ្យធ្លាក់ចុះលឿន បង្កឱ្យ ESR កើនឡើងខុសពិត។",
+    options: [
+      { text: "ធ្វើឱ្យលទ្ធផល ESR កើនឡើងខ្ពស់ខុសពីពិត (Falsely elevated ESR) ដោយសាររំញ័រជំរុញឱ្យគ្រាប់ឈាមស្រុត", isCorrect: true },
+      { text: "ធ្វើឱ្យលទ្ធផល ESR ធ្លាក់ចុះជិតសូន្យ ព្រោះរំញ័ររារាំងមិនឱ្យគ្រាប់ឈាមធ្លាក់ចុះ", isCorrect: false },
+      { text: "គ្មានការប៉ះពាល់អ្វីឡើយ ព្រោះកញ្ចក់ Westergren ការពាររំញ័របាន ១០០%", isCorrect: false },
+      { text: "ធ្វើឱ្យឈាមក្នុងបំពង់កកភ្លាមៗមិនអាចវាស់វែងបាន", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនចែងក្នុងចំណុច Limitation៖ ជើងទម្រ ESR ត្រូវតែដាក់នៅកន្លែងដែលគ្មានរំញ័រ (Vibration-free bench)។ រំញ័រពីម៉ាស៊ីន ឬតុធ្វើការរំខានចរន្តប្លាស្មា និងជំរុញឱ្យកោសិកាក្រហមស្រុតចុះលឿនជាងធម្មតា បណ្តាលឱ្យលទ្ធផល ESR កើនឡើងខុសពីការពិត។"
+  },
+  {
+    topic: "ESR Interpretation — Clinical Conditions [Analyze]",
+    title: "តើស្ថានភាពគ្លីនិកមួយណាខាងក្រោមនេះដែលត្រូវបានរំពឹងថានឹងធ្វើឱ្យល្បឿនស្រុតគ្រាប់ឈាមក្រហម (ESR) ធ្លាក់ចុះទាប (Decreased ESR)?",
+    hint: "Polycythemia vera (ឈាមខាប់ កោសិកាក្រហមកើនឡើងច្រើនកកកុញរារាំងគ្នា)។",
+    options: [
+      { text: "ជំងឺឈាមខាប់កើនគ្រាប់ឈាមក្រហម Polycythemia vera", isCorrect: true },
+      { text: "ជំងឺរលាកសន្លាក់រ៉ាំរ៉ៃ Rheumatoid arthritis", isCorrect: false },
+      { text: "ស្ត្រីមានផ្ទៃពោះ (Pregnancy)", isCorrect: false },
+      { text: "ជំងឺប្រព័ន្ធភាពស៊ាំ Systemic Lupus Erythematosus (SLE)", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនបែងចែកច្បាស់លាស់៖ Decrease ESR កើតមានក្នុង Polycythemia (កោសិកាក្រហមច្រើនណែនតាន់តាប់រារាំងលំហូរធ្លាក់), Congestive heart failure, Hyperviscosity, Decrease fibrinogen, និង Sickle cell anemia។ រីឯ RA, Pregnancy, SLE, និង Kidney disease បណ្តាលឱ្យ Increase ESR។"
+  },
+  {
+    topic: "ESR Specimen Handling — Cold Agglutinins [Evaluate]",
+    title: "ឈាមរបស់អ្នកជំងឺម្នាក់ទើបតែដកចេញពីទូទឹកកក (សីតុណ្ហភាព 4°C)។ ប្រសិនបើអ្នកបច្ចេកទេសប្រញាប់យកមកធ្វើតេស្ត ESR ភ្លាមៗដោយមិនរង់ចាំឱ្យឡើងកម្តៅបន្ទប់ តើអាចមានបាតុភូតអ្វីកើតឡើង?",
+    hint: "Cold agglutinins ធ្វើសកម្មភាពនៅត្រជាក់ បង្កឱ្យកោសិកាកកផ្តុំគ្នាធ្វើឱ្យ ESR កើនឡើងខុសពិត; ត្រូវទុកនៅបន្ទប់ ៣០ នាទីសិន។",
+    options: [
+      { text: "Cold agglutinins ធ្វើឱ្យ RBCs កកផ្តុំគ្នា បណ្តាលឱ្យលទ្ធផល ESR កើនឡើងខ្ពស់ខុសពិត", isCorrect: true },
+      { text: "សីតុណ្ហភាពត្រជាក់ធ្វើឱ្យកោសិកាឈាមក្រហមរលាយអស់ក្លាយជាប្លាស្មាថ្លា", isCorrect: false },
+      { text: "ធ្វើឱ្យល្បឿនស្រុតថយចុះស្ទើរតែស្មើ ០ មីលីម៉ែត្រក្នុងមួយម៉ោង", isCorrect: false },
+      { text: "ធ្វើឱ្យបំពង់ពីប៉ែត Westergren បែកស្រួយភ្លាមៗពេលប៉ះឈាមត្រជាក់", isCorrect: false }
+    ],
+    rationale: "ស្លាយ Limitation ចែងថា៖ ត្រូវយកសំណាកចេញពីទូទឹកកកដាក់ក្នុងបន្ទប់ពិសោធន៍យ៉ាងហោចណាស់ ៣០ នាទីមុនធ្វើតេស្ត។ ឈាមត្រជាក់អាចភ្ញោច Cold agglutination ធ្វើឱ្យកោសិកាកកស្អិតជាប់គ្នា នាំឱ្យលទ្ធផល ESR ឡើងខ្ពស់ខុសពិត។ (បើមាន Cold agglutinins គេអាចធ្វើ ESR នៅ 37°C)។"
+  },
+  {
+    topic: "ESR Procedure — Reading at 1 Hour [Evaluate]",
+    title: "ក្រោយពេលកំណត់ម៉ោងរយៈពេលគត់ ១ ម៉ោងលើជើងទម្រពីប៉ែត Westergren តើអ្នកបច្ចេកទេសត្រូវអាន និងកត់ត្រាលទ្ធផល ESR នៅត្រង់ចំណុចណា?",
+    hint: "វាស់ពីបន្ទាត់លេខ ០ ខាងលើចុះមកត្រឹមចំណុចប្រសព្វរវាងប្លាស្មា និងកោសិកាក្រហម គិតជា mm/h។",
+    svg: `<svg width="220" height="90" viewBox="0 0 220 90"><rect x="90" y="10" width="16" height="70" fill="#f8fafc" stroke="#94a3b8"/><rect x="90" y="10" width="16" height="25" fill="#fef08a" opacity="0.8"/><rect x="90" y="35" width="16" height="45" fill="#ef4444"/><line x1="80" y1="10" x2="115" y2="10" stroke="#38bdf8" stroke-width="1.5"/><line x1="80" y1="35" x2="115" y2="35" stroke="#f59e0b" stroke-width="2"/><text x="75" y="13" fill="#38bdf8" font-size="8" text-anchor="end">0 mm</text><text x="75" y="38" fill="#f59e0b" font-size="8" text-anchor="end">Meniscus</text><text x="135" y="25" fill="#fef08a" font-size="8">Plasma</text><text x="135" y="55" fill="#ef4444" font-size="8">RBCs</text></svg>`,
+    options: [
+      { text: "វាស់ពីចំណុចលេខ ០ ខាងលើ ចុះមកត្រឹមបន្ទាត់ប្រសព្វរវាងប្លាស្មាថ្លានិងស្រទាប់ RBCs គិតជា mm/h", isCorrect: true },
+      { text: "វាស់ពីបាតក្រោមនៃបំពង់ឡើងទៅលើរហូតដល់ចុងស្រទាប់ប្លាស្មា", isCorrect: false },
+      { text: "អានកម្រាស់ស្រទាប់កណ្តាល Buffy coat តែប៉ុណ្ណោះគិតជាភាគរយ", isCorrect: false },
+      { text: "វាស់កម្ពស់ប្លាស្មាដែលហួតបាត់ទៅក្នុងបរិយាកាសបន្ទប់ពិសោធន៍", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយនីតិវិធី៖ ពេលគ្រប់ ១ ម៉ោង ត្រូវកត់ត្រាចំនួនមីលីម៉ែត្រ (mm) ដោយវាស់គិតពីចំណុច ០ ខាងលើ (កម្រិតដើមនៃឈាម) ចុះមកត្រឹមបន្ទាត់ប្រសព្វរវាងប្លាស្មានិងកំណកកោសិកាឈាមក្រហម (Meniscus between plasma and settling RBC column)។"
+  },
+  {
+    topic: "Hematocrit — Centrifugation Standard [Analyze]",
+    title: "ក្នុងការធ្វើមីក្រូអេម៉ាតូគ្រីត (Microhematocrit) តើល្បឿន និងរយៈពេលបង្វិលស្តង់ដារក្នុងម៉ាស៊ីន Centrifuge ត្រូវបានកំណត់កម្រិតណា?",
+    hint: "ល្បឿន 10,000 ទៅ 13,000 rpm រយៈពេល ៥ នាទី។",
+    options: [
+      { text: "ល្បឿន 10,000 ទៅ 13,000 rpm រយៈពេល 5 នាទី", isCorrect: true },
+      { text: "ល្បឿន 1,000 ទៅ 2,000 rpm រយៈពេល 30 នាទី", isCorrect: false },
+      { text: "ល្បឿន 500 rpm រយៈពេល 1 ម៉ោងពេញ", isCorrect: false },
+      { text: "ល្បឿន 25,000 rpm រយៈពេល 30 វិនាទី", isCorrect: false }
+    ],
+    rationale: "ស្លាយគោលការណ៍អេម៉ាតូគ្រីតបញ្ជាក់ថា៖ គំរូឈាមក្នុង capillary tube ត្រូវយកទៅបង្វិលក្នុងល្បឿន 10,000 ដល់ 13,000 ជុំ/នាទី (rpm) ក្នុងរយៈពេល 5 នាទី ដើម្បីឱ្យកោសិកាក្រហមធ្លាក់ចុះណែនតាន់តាប់នៅផ្នែកខាងក្រោមដោយគ្មានបន្សល់ Trapped plasma ច្រើន។"
+  },
+  {
+    topic: "Hematocrit — Tube Orientation in Rotor [Analyze]",
+    title: "ពេលដាក់បំពង់កាពីឡែរ (Capillary tube) ចូលទៅក្នុងថាសម៉ាស៊ីនបង្វិល Hematocrit តើចុងដែលមានបិទក្រមួន (Clay sealant) ត្រូវបែរទៅទិសណា?",
+    hint: "ចុងបិទក្រមួនត្រូវបែរទៅខាងក្រៅទល់នឹងរឹមថាស (Clay end outside, away from center)។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><circle cx="110" cy="42" r="36" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/><circle cx="110" cy="42" r="8" fill="#38bdf8"/><line x1="110" y1="42" x2="144" y2="42" stroke="#ef4444" stroke-width="3"/><rect x="140" y="39" width="6" height="6" fill="#f59e0b"/><text x="110" y="25" fill="#f8fafc" font-size="8" text-anchor="middle">Rotor Center</text><text x="175" y="45" fill="#f59e0b" font-size="8">Clay Outside</text></svg>`,
+    options: [
+      { text: "ចុងបិទក្រមួនត្រូវបែរចេញទៅខាងក្រៅ ទល់នឹងរឹមថាសម៉ាស៊ីន (Clay end outside)", isCorrect: true },
+      { text: "ចុងបិទក្រមួនត្រូវបែរចូលក្នុងតម្រង់មករកកណ្តាលស្នូលម៉ាស៊ីន", isCorrect: false },
+      { text: "ដាក់បញ្ឈរត្រង់ ៩០ ដឺក្រេឡើងលើដោយមិនបាច់ផ្អែករឹម", isCorrect: false },
+      { text: "ដាក់បែរទៅទិសណាក៏បានមិនមានផលប៉ះពាល់ដល់ឈាមឡើយ", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀន និងរូបភាព Rotor បង្ហាញការណែនាំច្បាស់លាស់៖ 'Clay end outside, away from the center'។ កម្លាំងកណ្តាលវាត (Centrifugal force) រុញកោសិកាចេញទៅក្រៅ។ បើដាក់ចុងក្រមួនចូលក្នុង ឈាមនឹងត្រូវកម្លាំងរុញធ្លាយចេញតាមចុងបើកចំហរ បណ្តាលឱ្យបាត់បង់ឈាម និងប្រឡាក់ខូចម៉ាស៊ីន។"
+  },
+  {
+    topic: "Hematocrit — Buffy Coat Exclusion [Evaluate]",
+    title: "បន្ទាប់ពីបង្វិល Centrifuge រួច ឈាមចែកជា ៣ ស្រទាប់ (Plasma, Buffy coat, Packed RBCs)។ ហេតុអ្វីបានជាត្រូវវាស់កម្រិត Hematocrit នៅត្រឹមផ្នែកខាងក្រោមស្រទាប់ Buffy coat?",
+    hint: "Buffy coat ជាស្រទាប់កោសិកាស និងផ្លាកែត មិនមែនជាគោលិកាក្រហម (RBC) ឡើយ។",
+    svg: `<svg width="220" height="85" viewBox="0 0 220 85"><rect x="40" y="32" width="140" height="20" fill="#f8fafc" stroke="#94a3b8"/><rect x="40" y="32" width="65" height="20" fill="#fef08a"/><rect x="105" y="32" width="8" height="20" fill="#cbd5e1"/><rect x="113" y="32" width="67" height="20" fill="#ef4444"/><text x="72" y="45" fill="#090d16" font-size="8" text-anchor="middle">Plasma</text><text x="109" y="24" fill="#cbd5e1" font-size="8" text-anchor="middle">Buffy coat</text><text x="145" y="45" fill="#f8fafc" font-size="8" text-anchor="middle">RBCs</text><line x1="113" y1="20" x2="113" y2="60" stroke="#38bdf8" stroke-width="1.5"/><text x="113" y="70" fill="#38bdf8" font-size="7.5" text-anchor="middle">Read Hct Here</text></svg>`,
+    options: [
+      { text: "ព្រោះ Buffy coat ជាកោសិកាឈាមស និងផ្លាកែត បើវាស់បញ្ចូលនឹងធ្វើឱ្យ Hct ឡើងខ្ពស់ខុសពិត", isCorrect: true },
+      { text: "ព្រោះ Buffy coat ជាកាកសំណល់ជាតិខ្លាញ់ដែលត្រូវបោះចោល", isCorrect: false },
+      { text: "ព្រោះម៉ាស៊ីនអានបន្ទះក្រដាសមិនអាចមើលឃើញពណ៌សបានឡើយ", isCorrect: false },
+      { text: "ព្រោះស្រទាប់ Buffy coat ផ្ទុកតែកោសិកាក្រហមដែលងាប់អស់", isCorrect: false }
+    ],
+    rationale: "Hematocrit គឺជាការវាស់មាឌភាគរយនៃគោលិកាក្រហម (Packed Red Cell Volume) សុទ្ធសាធ។ ស្រទាប់ស្តើងពណ៌សកណ្តាល (Buffy coat) ផ្សំឡើងពី Leukocytes និង Platelets ដូច្នេះ % Hematocrit ត្រូវតែអាននៅត្រង់បន្ទាត់ព្រំដែនក្រោម Buffy coat (ប្រសព្វជាមួយ RBC)។"
+  },
+  {
+    topic: "Hematocrit — Quality Control Limits [Evaluate]",
+    title: "អ្នកបច្ចេកទេសធ្វើតេស្តមីក្រូអេម៉ាតូគ្រីតជាលក្ខណៈ Duplicate (២ បំពង់) លើអ្នកជំងឺម្នាក់ ឃើញថាបំពង់ទី១ អានបាន 37% រីឯបំពង់ទី២ អានបាន 41%។ តើការអនុវត្តត្រួតពិនិត្យគុណភាព (QC) តម្រូវឱ្យធ្វើអ្វី?",
+    hint: "ការធ្វើ Hematocrit ពីរដងត្រូវតែមានគម្លាតមិនលើសពី +/- 1% ឡើយ។",
+    options: [
+      { text: "លទ្ធផលមិនត្រឹមត្រូវ ព្រោះគម្លាតលើសពី +/- 1% ដូច្នេះត្រូវធ្វើតេស្តឡើងវិញជាពីរដង", isCorrect: true },
+      { text: "បូកបញ្ចូលគ្នាហើយចែកជាពីរយកមធ្យម 39% ចេញលទ្ធផលភ្លាម", isCorrect: false },
+      { text: "ជ្រើសរើសយកតម្លៃ 41% ព្រោះជាតម្លៃខ្ពស់ជាងគេមានសុវត្ថិភាព", isCorrect: false },
+      { text: "គម្លាត 4% ជាគម្លាតធម្មតាក្នុងការធ្វើតេស្តដោយដៃ មិនបាច់ធ្វើឡើងវិញឡើយ", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយត្រួតពិនិត្យគុណភាពនៃមេរៀន Hematocrit៖ ការធ្វើ Hematocrit ត្រូវធ្វើពីរដង (Duplicate) ហើយគម្លាតរបស់វាត្រូវតែនៅចន្លោះ +/- 1% ប៉ុណ្ណោះ។ ទីនេះគម្លាតដល់ទៅ 4% (37% vs 41%) ដូច្នេះលទ្ធផលគ្មានសុពលភាពឡើយ ត្រូវតែរៀបចំធ្វើឡើងវិញជាបន្ទាន់។"
+  },
+  {
+    topic: "Hematocrit — Pre-analytical Contamination [Analyze]",
+    title: "អ្នកជំងឺម្នាក់កំពុងព្យួរ سیرូមប្រៃ (IV Normal Saline) នៅដៃស្តាំ។ គិលានុបដ្ឋាយិកាបានបូមឈាមពីដៃស្តាំនោះយកមកពិនិត្យ CBC ឃើញថា Hct ធ្លាក់ចុះពី 42% មកនៅត្រឹម 24% ភ្លាមៗ។ តើបាតុភូតអ្វីបានកើតឡើង?",
+    hint: "Hemodilution ដោយសារការចម្លងសេរ៉ូមចូលក្នុងទីបឈាម (Contamination of EDTA tube with IV fluid)។",
+    options: [
+      { text: "ការចម្លងសេរ៉ូមបញ្ចូលជាតិទឹកចូលក្នុងទីបឈាម (Hemodilution ពី IV fluid) បណ្តាលឱ្យ Hct ធ្លាក់ចុះខុសពិត", isCorrect: true },
+      { text: "អ្នកជំងឺមានការហូរឈាមក្នុងពោះបាត់បង់គ្រាប់ឈាមរាប់លីត្រក្នុងរយៈពេល ១ នាទី", isCorrect: false },
+      { text: "ម៉ាស៊ីន Centrifuge បង្វិលក្នុងល្បឿនលឿនពេកធ្វើឱ្យកោសិកាក្រហមបាត់បង់ជាតិទឹក", isCorrect: false },
+      { text: "ជាតិអំបិលធ្វើឱ្យកោសិកាក្រហមប្រែរូបរាងទៅជាប្លាកែតភ្លាមៗ", isCorrect: false }
+    ],
+    rationale: "ស្លាយមេរៀនចែងច្បាស់ក្នុងមូលហេតុ 'Common causes of low hematocrit'៖ ការឆ្លងសេរ៉ូមចូលទៅក្នុងទីប EDTA (Contamination of EDTA tube with IV fluid) ពេលបូមឈាមនៅដៃម្ខាងគា្ននឹងកន្លែងព្យួរសេរ៉ូម ធ្វើឱ្យប្លាស្មារាវខ្លាំង (Hemodilution) នាំឱ្យតម្លៃ Hematocrit និង Hemoglobin ធ្លាក់ចុះទាបក្លែងក្លាយ។"
+  },
+  {
+    topic: "Hematocrit — Clinical Correlation / Dengue [Clinical Analyze]",
+    title: "កុមារអាយុ ៨ ឆ្នាំម្នាក់សង្ស័យកើតជំងឺគ្រុនឈាម (Dengue hemorrhagic fever) ត្រូវបានតាមដាន Hematocrit រៀងរាល់ ៤ ម៉ោងម្តង។ ប្រសិនបើ Hct កើនឡើងពី 35% ទៅដល់ 46% តើការប្រែប្រួលនេះឆ្លុះបញ្ចាំងពីយន្តការអ្វី?",
+    hint: "ការជ្រាបបាត់បង់ប្លាស្មា (Plasma leakage) នាំឱ្យឈាមខាប់ខ្លាំង (Hemoconcentration)។",
+    options: [
+      { text: "ការលេចធ្លាយប្លាស្មាចេញពីសរសៃឈាម (Plasma leakage) នាំឱ្យឈាមកើនភាពខាប់ខ្លាំង (Hemoconcentration)", isCorrect: true },
+      { text: "ខួរឆ្អឹងផលិតកោសិកាក្រហមបានរាប់ពាន់លានក្នុងរយៈពេលប៉ុន្មានម៉ោង", isCorrect: false },
+      { text: "កុមារមានជំងឺកង្វះគ្រាប់ឈាមក្រហមស្រួចស្រាវ", isCorrect: false },
+      { text: "កោសិកាឈាមសទាំងអស់បានបំប្លែងខ្លួនទៅជាកោសិកាក្រហម", isCorrect: false }
+    ],
+    rationale: "យោងតាមតារាង Common causes of high hematocrit៖ ការកើនឡើង Hct លើសពី 20% នៃ Baseline ក្នុងជំងឺគ្រុនឈាម គឺជាសញ្ញាព្រមានអាសន្ននៃការលេចធ្លាយប្លាស្មាចេញក្រៅសរសៃឈាម (Plasma leakage) បង្កឱ្យកើត Hemoconcentration (ឈាមខាប់ខ្លាំង) ដែលអាចឈានទៅរក Dengue Shock Syndrome។"
+  },
+  {
+    topic: "Hematocrit — Dehydration & Rehydration [Analyze]",
+    title: "អ្នកជំងឺរាគកូឡេរ៉ាធ្ងន់ធ្ងរម្នាក់ (Dehydration) ចូលពេទ្យមាន Hct = 55%។ ក្រោយពេលគ្រូពេទ្យបញ្ចូលសេរ៉ូមជួយសង្គ្រោះអស់ ២ លីត្រ ពិនិត្យ Hct ម្តងទៀតឃើញធ្លាក់ចុះមកនៅត្រឹម 38%។ តើការបកស្រាយណាត្រឹមត្រូវ?",
+    hint: "តម្លៃ 55% ដំបូងជាតម្លៃឡើងខ្ពស់ក្លែងក្លាយដោយសារខ្វះជាតិទឹក; តម្លៃ 38% ទើបជាស្ថានភាពពិតក្រោយបំពេញជាតិទឹក។",
+    options: [
+      { text: "តម្លៃ 55% ដំបូងបណ្តាលមកពីការខ្វះជាតិទឹក (Hemoconcentration) រីឯ 38% បង្ហាញពីស្ថានភាពមាឌឈាមធម្មតាវិញ", isCorrect: true },
+      { text: "ការបញ្ចូលសេរ៉ូមបានបំផ្លាញគ្រាប់ឈាមក្រហមអស់ជិតពាក់កណ្តាលក្នុងខ្លួនអ្នកជំងឺ", isCorrect: false },
+      { text: "អ្នកជំងឺបានកើតជំងឺមហារីកឈាមភ្លាមៗក្រោយពេលបញ្ចូលសេរ៉ូមរួច", isCorrect: false },
+      { text: "បំពង់ capillary tube លើកទីពីរត្រូវម៉ាស៊ីនបង្វិលមិនគ្រប់ ៥ នាទី", isCorrect: false }
+    ],
+    rationale: "ការខ្វះជាតិទឹកធ្ងន់ធ្ងរ (Dehydration) ធ្វើឱ្យមាឌប្លាស្មាធ្លាក់ចុះ បង្ហាញតម្លៃ Hct ខ្ពស់ក្លែងក្លាយ (Relative polycythemia / Hemoconcentration)។ ពេលបានទទួលជាតិទឹកគ្រប់គ្រាន់ ប្លាស្មាវិលមករកប្រក្រតីភាពវិញ ទើបតម្លៃ Hct ពិតប្រាកដរបស់អ្នកជំងឺ (38%) ត្រូវបានបង្ហាញ។"
+  },
+  {
+    topic: "RBC Indices — MCV Calculation from Hct [Apply]",
+    title: "អ្នកជំងឺម្នាក់មានលទ្ធផល Hct = 36% និងចំនួន RBC = 4.0 x 10^12/L។ ផ្អែកលើរូបមន្តក្នុងស្លាយមេរៀន MCV = (Hct / RBC) x 10 តើតម្លៃ MCV ស្មើនឹងប៉ុន្មាន ហើយស្ថិតក្នុងកម្រិតណា?",
+    hint: "MCV = (36 / 4.0) x 10 = 90 fL (Normal range 80-100 fL)។",
+    options: [
+      { text: "90 fL (Normocytic — ទំហំកោសិកាធម្មតា)", isCorrect: true },
+      { text: "70 fL (Microcytic — កោសិកាតូច)", isCorrect: false },
+      { text: "115 fL (Macrocytic — កោសិកាធំ)", isCorrect: false },
+      { text: "45 fL (Hypochromic)", isCorrect: false }
+    ],
+    rationale: "យោងតាមស្លាយគណនា Indices នៃមេរៀន Hematocrit៖ MCV = (Hct / RBC) x 10 -> (36 / 4.0) x 10 = 9 x 10 = 90 fL។ តម្លៃធម្មតាគឺ 80-100 fL ដូច្នេះកោសិកាក្រហមរបស់អ្នកជំងឺមានទំហំធម្មតា (Normocytic)។"
+  },
+  {
+    topic: "Capillary Sampling Pitfall — Excessive Milking [Analyze]",
+    title: "ពេលចាក់ឈាមចុងម្រាមដៃដើម្បីយកឈាមដាក់បំពង់ Capillary tube បើអ្នកបច្ចេកទេសច្របាច់សង្កត់ម្រាមដៃខ្លាំងជ្រុល (Excessive squeezing / milking) តើនឹងប៉ះពាល់ដល់តម្លៃ Hematocrit ដូចម្តេច?",
+    hint: "ការច្របាច់ខ្លាំងធ្វើឱ្យទឹករងៃជាលិកា (Interstitial fluid) ច្រោះចូលលាយ បណ្តាលឱ្យលទ្ធផល Hct ទាបខុសពិត។",
+    options: [
+      { text: "Hct ធ្លាក់ចុះទាបខុសពិត ព្រោះទឹកជាលិកា (Tissue fluid) ច្រោះចូលរំលាយធ្វើឱ្យឈាមរាវ", isCorrect: true },
+      { text: "Hct កើនឡើងខ្ពស់ខុសពិត ព្រោះកោសិកាក្រហមរងការកកកុញកាន់តែច្រើន", isCorrect: false },
+      { text: "គ្មានការប្រែប្រួលអ្វីឡើយ ព្រោះជាលិកាម្រាមដៃគ្មានផ្ទុកជាតិទឹករាវទេ", isCorrect: false },
+      { text: "កោសិកាក្រហមទាំងអស់នឹងប្រែទៅជា Hemoglobin A2 ភ្លាមៗ", isCorrect: false }
+    ],
+    rationale: "ការច្របាច់ ឬសង្កត់ចុងម្រាមដៃខ្លាំងជ្រុល (Milking) នឹងច្របាច់បញ្ចូលសារធាតុរាវអន្តរកោសិកា (Interstitial tissue fluid) ចូលទៅក្នុងឈាមកាពីឡែរ ធ្វើឱ្យគំរូឈាមរាវ (Diluted blood) បណ្តាលឱ្យតម្លៃ Hematocrit និង Hemoglobin ធ្លាក់ចុះទាបក្លែងក្លាយ។"
+  },
+  {
+    topic: "Hematocrit — Newborn Physiological Value [Evaluate]",
+    title: "ទារកទើបនឹងកើតអាយុ ៣ ថ្ងៃម្នាក់ មានលទ្ធផលវាស់ Hematocrit ឃើញ 60% (0.60)។ ផ្អែកលើតារាងតម្លៃយោងតាមក្រុមអាយុ (Reference Ranges) តើអ្នកបច្ចេកទេសគួរវាយតម្លៃលទ្ធផលនេះដូចម្តេច?",
+    hint: "ទារកអាយុតិចជាង ១ ខែ មានកម្រិតធម្មតាខ្ពស់គឺ 45-75% (0.45-0.75)។",
+    options: [
+      { text: "ជាតម្លៃធម្មតាស្របតាមសរីរវិទ្យារបស់ទារកទើបនឹងកើត (Normal for newborn: 45-75%)", isCorrect: true },
+      { text: "ជាជំងឺឈាមខាប់ធ្ងន់ធ្ងរ Polycythemia ដែលត្រូវបញ្ជូនទៅសង្គ្រោះបន្ទាន់", isCorrect: false },
+      { text: "ជាការច្រឡំបំពង់កាពីឡែរ ព្រោះមនុស្សមិនអាចមាន Hct លើសពី ៥០% បានឡើយ", isCorrect: false },
+      { text: "ជាកំហុសបច្ចេកទេសដោយសារម៉ាស៊ីន Centrifuge បង្វិលមិនគ្រប់ជុំ", isCorrect: false }
+    ],
+    rationale: "យោងតាមតារាង Reference Ranges for Hematocrit នៃមេរៀន៖ ក្មេងអាយុតិចជាង ១ ខែ (Newborn) មានតម្លៃធម្មតាខ្ពស់ចន្លោះពី 45-75% (0.45–0.75) ដោយសារសរីរវិទ្យាត្រូវការផ្ទុកអុកស៊ីសែនខ្ពស់កាលក្នុងផ្ទៃម្តាយ។ ដូច្នេះតម្លៃ 60% គឺធម្មតាទាំងស្រុងសម្រាប់ទារកទើបកើត។"
+  },
+  {
+    topic: "ESR vs Hematocrit Integration — Acute Blood Loss [Clinical Analyze]",
+    title: "អ្នកជំងឺម្នាក់ជួបគ្រោះថ្នាក់ចរាចរណ៍ហូរឈាមស្រួចស្រាវ (Acute hemorrhage) ត្រូវបានបញ្ជូនមកបន្ទប់សង្គ្រោះ។ ហេតុអ្វីបានជាការវាស់ Hematocrit ភ្លាមៗនៅម៉ោងដំបូងអាចនៅតែឃើញធម្មតា (Normal Hct) បើទោះជាអ្នកជំងឺបាត់បង់ឈាមច្រើន?",
+    hint: "ការបាត់បង់ឈាមស្រួចស្រាវបាត់បង់ទាំង RBCs និង Plasma ក្នុងសមាមាត្រស្មើគ្នា រហូតដល់រាងកាយទាញទឹកមកប៉ះប៉ូវទើប Hct ធ្លាក់។",
+    options: [
+      { text: "ព្រោះបាត់បង់ទាំង RBCs និង Plasma ដំណាលគ្នាក្នុងសមាមាត្រស្មើ ទាល់តែរាងកាយទាញទឹកមកប៉ះប៉ូវទើប Hct ធ្លាក់", isCorrect: true },
+      { text: "ព្រោះខួរឆ្អឹងអាចផលិតកោសិកាឈាមក្រហមថ្មីបានរាប់ពាន់លានក្នុងរយៈពេល ១ វិនាទី", isCorrect: false },
+      { text: "ព្រោះកោសិកាឈាមសបំប្លែងខ្លួនទៅជាកោសិកាក្រហមភ្លាមៗក្នុងពេលមានគ្រោះថ្នាក់", isCorrect: false },
+      { text: "ព្រោះម៉ាស៊ីន Centrifuge មិនអាចបង្វិលឈាមដែលមានសម្ពាធទាបបានឡើយ", isCorrect: false }
+    ],
+    rationale: "ក្នុងការបាត់បង់ឈាមស្រួចស្រាវ (Acute blood loss) ទាំងកោសិកាក្រហម និងប្លាស្មាត្រូវបាត់បង់ក្នុងសមាមាត្រស្មើគ្នា (Whole blood loss) ដូច្នេះកំហាប់ភាគរយ % Hct ក្នុងម៉ោងដំបូងនៅតែធម្មតា។ លុះត្រាតែរាងកាយទាញសារធាតុរាវពីជាលិកាចូលមកប៉ះប៉ូវ (Hemodilution) ឬក្រោយពេលបញ្ចូលជាតិទឹក ទើបតម្លៃ Hct ធ្លាក់ចុះឆ្លុះបញ្ចាំងពីកម្រិតស្លេកស្លាំងពិត។"
+  }
+];
+
+function shuffleArray(arr) {
+  const newArr = [...arr];
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+  }
+  return newArr;
+}
+
+let activeQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let timeLeft = 60;
+let timerInterval = null;
+let answered = false;
+let userResults = [];
+
+function initQuiz() {
+  activeQuestions = shuffleArray(rawQuestions).map(q => {
+    return {
+      ...q,
+      options: shuffleArray(q.options)
+    };
+  });
+  
+  currentIndex = 0;
+  score = 0;
+  userResults = [];
+  document.getElementById('finalCard').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  loadQuestion(currentIndex);
+}
+
+function loadQuestion(index) {
+  answered = false;
+  timeLeft = 60;
+  clearInterval(timerInterval);
+  
+  const q = activeQuestions[index];
+  document.getElementById('topicBadge').textContent = q.topic;
+  document.getElementById('qCount').textContent = `សំណួរទី ${index + 1} នៃ ${activeQuestions.length}`;
+  document.getElementById('questionTitle').textContent = `${index + 1}. ${q.title}`;
+  
+  const diagBox = document.getElementById('diagramContainer');
+  if (q.svg) {
+    diagBox.innerHTML = q.svg;
+    diagBox.style.display = 'flex';
+  } else {
+    diagBox.innerHTML = '';
+    diagBox.style.display = 'none';
+  }
+
+  document.getElementById('hintContent').textContent = q.hint;
+  document.getElementById('hintContent').style.display = 'none';
+  document.getElementById('feedbackBox').style.display = 'none';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = (index === activeQuestions.length - 1) ? "ពិនិត្យលទ្ធផល →" : "សំណួរបន្ទាប់ →";
+  
+  const optionsGrid = document.getElementById('optionsGrid');
+  optionsGrid.innerHTML = '';
+  q.options.forEach((optObj, optIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + optIdx)}.</span> <span>${optObj.text}</span>`;
+    btn.onclick = () => selectOption(optIdx);
+    optionsGrid.appendChild(btn);
+  });
+  
+  updateTimerUI();
+  timerInterval = setInterval(() => {
+    if (timeLeft > 0) {
+      timeLeft--;
+      updateTimerUI();
+    } else {
+      clearInterval(timerInterval);
+      if (!answered) {
+        handleTimeout();
+      }
+    }
+  }, 1000);
+  
+  updateProgress();
+}
+
+function updateTimerUI() {
+  const el = document.getElementById('timerText');
+  const box = document.getElementById('timerBox');
+  el.textContent = timeLeft + 's';
+  if (timeLeft <= 10) {
+    box.classList.add('urgent');
+  } else {
+    box.classList.remove('urgent');
+  }
+}
+
+function toggleHint() {
+  const h = document.getElementById('hintContent');
+  h.style.display = h.style.display === 'none' ? 'block' : 'none';
+}
+
+function selectOption(chosenIdx) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  
+  const q = activeQuestions[currentIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(btn => btn.disabled = true);
+  
+  const correctIdx = q.options.findIndex(o => o.isCorrect);
+  const isCorrect = q.options[chosenIdx].isCorrect;
+  
+  if (isCorrect) {
+    score++;
+    buttons[chosenIdx].classList.add('correct');
+  } else {
+    buttons[chosenIdx].classList.add('wrong');
+    buttons[correctIdx].classList.add('correct');
+  }
+  
+  userResults.push({
+    q: q.title,
+    chosen: q.options[chosenIdx].text,
+    correctText: q.options[correctIdx].text,
+    isCorrect: isCorrect,
+    why: q.rationale
+  });
+  
+  document.getElementById('liveScore').textContent = `ពិន្ទុ: ${score} / ${currentIndex + 1}`;
+  document.getElementById('feedbackText').textContent = q.rationale;
+  document.getElementById('feedbackBox').style.display = 'block';
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function handleTimeout() {
+  answered = true;
+  const q = activeQuestions[currentIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(btn => btn.disabled = true);
+  const correctIdx = q.options.findIndex(o => o.isCorrect);
+  buttons[correctIdx].classList.add('correct');
+  
+  userResults.push({
+    q: q.title,
+    chosen: "អស់ពេល (Time Expired)",
+    correctText: q.options[correctIdx].text,
+    isCorrect: false,
+    why: q.rationale
+  });
+  
+  document.getElementById('feedbackText').innerHTML = '<strong style="color:#ef4444;">អស់ពេល ៦០ វិនាទី! (Time Expired)</strong><br>' + q.rationale;
+  document.getElementById('feedbackBox').style.display = 'block';
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < activeQuestions.length) {
+    loadQuestion(currentIndex);
+  } else {
+    showFinalResults();
+  }
+}
+
+function updateProgress() {
+  const pct = ((currentIndex + 1) / activeQuestions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function showFinalResults() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('finalCard').style.display = 'block';
+  const pct = Math.round((score / activeQuestions.length) * 100);
+  document.getElementById('finalScoreVal').textContent = `${score} / ${activeQuestions.length} (${pct}%)`;
+  
+  let msg = '';
+  if (pct >= 80) msg = 'ល្អប្រសើរណាស់! អ្នកមានសមត្ថភាពវិភាគការងារមន្ទីរពិសោធន៍ជាក់ស្តែង Neubauer, ESR និង Microhematocrit យ៉ាងស្ទាត់ជំនាញ។';
+  else if (pct >= 60) msg = 'លទ្ធផលល្អបង្គួរ! គួរពិនិត្យឡើងវិញលើរូបមន្តគណនា Neubauer chamber, ការត្រួតពិនិត្យគុណភាព (QC limits), និងកត្តាប្រែប្រួល ESR។';
+  else msg = 'ត្រូវរំលឹកមេរៀនឡើងវិញ ជាពិសេសវិធានព្រំប្រទល់រាប់កោសិកា, កំហុសបច្ចេកទេស Capillary centrifuge, និងការបកស្រាយលទ្ធផល Hct/ESR។';
+  document.getElementById('finalFeedback').textContent = msg;
+
+  const reviewEl = document.getElementById('reviewContainer');
+  reviewEl.innerHTML = '<h3 style="margin-bottom:12px; color:var(--primary);">ពិនិត្យចម្លើយលម្អិត (Practical Case Review):</h3>' + 
+    userResults.map((r, i) => `
+      <details class="review-item">
+        <summary>${i + 1}. ${r.isCorrect ? "✓ ត្រឹមត្រូវ" : "✗ ខុស"} — ${r.q.substring(0, 50)}...</summary>
+        <p><strong>ករណីសំណួរ៖</strong> ${r.q}</p>
+        <p><strong>ចម្លើយរបស់អ្នក៖</strong> <span style="color:${r.isCorrect ? '#86efac' : '#fca5a5'}">${r.chosen}</span></p>
+        <p><strong>ចម្លើយត្រឹមត្រូវ៖</strong> <span style="color:#86efac">${r.correctText}</span></p>
+        <p><strong>ការពន្យល់បច្ចេកទេសមន្ទីរពិសោធន៍៖</strong> ${r.why}</p>
+      </details>
+    `).join('');
+}
+
+window.onload = initQuiz;
+</script>
+</body>
+</html>
